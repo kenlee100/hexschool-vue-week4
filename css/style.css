@@ -1,0 +1,82 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+img {
+    object-fit: contain;
+    max-width: 100%;
+}
+
+.primary-image {
+    height: 300px;
+}
+
+.images {
+    height: 150px;
+}
+
+.loading {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0 0 0  / 60%);
+    z-index: 1000;
+}
+
+.loading.-show {
+    display: flex;
+}
+
+.loader {
+    width: 80px;
+    height: 80px;
+    position: relative;
+}
+
+.loader::after,
+.loader::before {
+    content: '';
+    box-sizing: border-box;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: animloader 2s linear infinite;
+}
+
+.loader::after {
+    animation-delay: 1s;
+}
+
+@keyframes animloader {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}

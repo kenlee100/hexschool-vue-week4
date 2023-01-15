@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>產品列表</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="text-end mt-4">
+          <button
+            class="btn btn-primary"
+            data-bs-target="#productModal"
+            data-bs-toggle="modal"
+            @click="openModal('new')"
+          >
+            建立新的產品
+          </button>
+        </div>
+        <table class="table mt-4">
+          <thead>
+            <tr>
+              <th width="120">分類</th>
+              <th>產品名稱</th>
+              <th width="120">原價</th>
+              <th width="120">售價</th>
+              <th width="100">是否啟用</th>
+              <th width="120">編輯</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in products" :key="item.id">
+              <td>{{ item.category }}</td>
+              <td>{{ item.title }}</td>
+              <td class="text-end">{{item.origin_price }}</td>
+              <td class="text-end">{{item.price }}</td>
+              <td>
+                <span class="text-success" v-if="item.is_enabled">啟用</span>
+                <span class="text-danger" v-else>未啟用</span>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    data-bs-target="#productModal"
+                    data-bs-toggle="modal"
+                    @click="openModal('edit',item)"
+                  >
+                    編輯
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    data-bs-target="#delProductModal"
+                    data-bs-toggle="modal"
+                    @click="openModal('delete',item)"
+                  >
+                    刪除
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <pagination
+          :pages="pagination"
+          @change-page="getProducts"
+          :get-products="getProducts"
+        ></pagination>
+      </div>
+      <!-- 讀取畫面事件待執行 -->
+      <loading :is-show="isLoading"></loading>
+      <!-- Modal -->
+      <product-modal
+        :api-url="url"
+        :api-path="path"
+        :temp-content="temp"
+        :is-new="isNew"
+        @update-data="getProducts"
+      ></product-modal>
+      <del-product-modal
+        :api-url="url"
+        :api-path="path"
+        :temp-content="temp"
+        @update-data="getProducts"
+      ></del-product-modal>
+      <!-- Modal -->
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js"
+      integrity="sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+      integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+      integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script type="module">
+      import config from "./js/config.js";
+      import productModal from "./js/productModal.js";
+      import delProductModal from "./js/delProductModal.js";
+      import pagination from "./js/pagination.js";
+      import loading from "./js/loading.js";
+      const app = Vue.createApp({
+        data() {
+          return {
+            ...config,
+            // 初始商品資料
+            products: [],
+            temp: {
+              imagesUrl: [],
+            },
+            pagination: {},
+            isNew: false,
+            isLoading: false,
+          };
+        },
+        components: {
+          productModal,
+          delProductModal,
+          pagination,
+          loading,
+        },
+        methods: {
+          // 檢查是否登入
+          checkLogin() {
+            axios
+              .post(`${this.url}/api/user/check`)
+              .then((res) => {
+                this.getProducts();
+              })
+              .catch((err) => {
+                // 顯示失敗資訊
+                alert(err.data.message);
+                // 驗證失敗轉到登入
+                window.location.href = "login.html";
+              });
+          },
+          // 取得目前頁碼商品資料
+          getProducts(num = 1) {
+            this.isLoading = true;
+            axios
+              .get(`${this.url}/api/${this.path}/admin/products/?page=${num}`)
+              .then((res) => {
+                this.products = res.data.products;
+                this.pagination = res.data.pagination;
+                this.isLoading = false;
+              })
+              .catch((err) => {
+                this.isLoading = false;
+                // 顯示失敗資訊
+                alert(err.data.message);
+              });
+          },
+          openModal(productMethod, item) {
+            if (productMethod === "new") {
+              this.isNew = true;
+              this.temp = { imagesUrl: [] };
+            } else if (productMethod === "edit" || productMethod === "delete") {
+              this.isNew = false;
+              this.temp = JSON.parse(JSON.stringify(item));
+            }
+          },
+          // toggleLoading() {
+          //   this.isLoading = true;
+          // },
+          logout() {
+            axios
+              .post(`${this.url}/logout/`)
+              .then((res) => {
+                alert(res.data.message);
+                document.cookie = 'userToken="";';
+                window.location.href = "login.html";
+              })
+              .catch((err) => {
+                alert(err.data.message);
+              });
+          },
+        },
+        mounted() {
+          // 取出 Token
+          const token = document.cookie.replace(
+            // userToken 剛剛定義的Token名稱
+            /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+            "$1"
+          );
+          axios.defaults.headers.common["Authorization"] = token;
+          this.checkLogin();
+        },
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>
