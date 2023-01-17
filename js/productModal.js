@@ -26,8 +26,8 @@ export default {
     },
   },
   methods: {
-    closeModal(target) {
-      target.hide();
+    closeModal() {
+      this.productModal.hide();
     },
     // 建立圖片欄位
     createImage() {
@@ -108,7 +108,7 @@ export default {
           this.$emit("update-data");
           alert(res.data.message);
 
-          this.closeModal(this.productModal);
+          this.closeModal();
         })
         .catch((err) => {
           alert(err.data.message);
@@ -116,7 +116,7 @@ export default {
     },
   },
   mounted() {
-    this.productModal = new bootstrap.Modal(this.$refs.productModal);
+    this.productModal = new bootstrap.Modal("#productModal");
   },
   template: `
           <div
@@ -176,16 +176,16 @@ export default {
                     </div>
                   </div>
                   <div class="mb-3">
-                    <button
-                      class="btn btn-outline-primary btn-sm d-block w-100"
+                    <button class="btn btn-outline-primary btn-sm d-block w-100"
                       @click="createImage"
                     >
                       新增其他圖片欄位
                     </button>
                   </div>
+                  <!-- 判斷 tempContent.imagesUrl 是一個陣列 -->
                   <div
                     class="d-flex flex-column overflow-auto"
-                    v-if="tempContent.imagesUrl"
+                    v-if="Array.isArray(tempContent.imagesUrl)"
                   >
                     <template
                       v-for="(item,index) in tempContent.imagesUrl"
@@ -339,7 +339,7 @@ export default {
                 type="button"
                 class="btn btn-outline-secondary"
                 data-bs-dismiss="modal"
-                @click="closeModal(productModal)"
+                @click="closeModal"
               >
                 取消
               </button>

@@ -119,6 +119,9 @@
       import delProductModal from "./js/delProductModal.js";
       import pagination from "./js/pagination.js";
       import loading from "./js/loading.js";
+
+      let productModalContainer = null;
+      let delProductModalContainer = null;
       const app = Vue.createApp({
         data() {
           return {
@@ -173,15 +176,17 @@
           openModal(productMethod, item) {
             if (productMethod === "new") {
               this.isNew = true;
+              productModalContainer.show();
               this.temp = { imagesUrl: [] };
-            } else if (productMethod === "edit" || productMethod === "delete") {
+            } else if (productMethod === "edit") {
               this.isNew = false;
               this.temp = JSON.parse(JSON.stringify(item));
+              productModalContainer.show();
+            } else if (productMethod === "delete") {
+              this.temp = JSON.parse(JSON.stringify(item));
+              delProductModalContainer.show();
             }
           },
-          // toggleLoading() {
-          //   this.isLoading = true;
-          // },
           logout() {
             axios
               .post(`${this.url}/logout/`)
@@ -204,6 +209,10 @@
           );
           axios.defaults.headers.common["Authorization"] = token;
           this.checkLogin();
+
+          // 初始化modal
+          productModalContainer = new bootstrap.Modal("#productModal");
+          delProductModalContainer = new bootstrap.Modal("#delProductModal");
         },
       });
 

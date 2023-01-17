@@ -28,15 +28,15 @@ export default {
           // 外層傳入 取得所有商品
           this.$emit("update-data");
           alert(res.data.message);
-          this.closeModal(this.delProductModal);
+          this.closeModal();
         })
         .catch((err) => {
           // 顯示失敗資訊
           alert(err.data.message);
         });
     },
-    closeModal(target) {
-      target.hide();
+    closeModal() {
+      this.delProductModal.hide();
     },
   },
   mounted() {
