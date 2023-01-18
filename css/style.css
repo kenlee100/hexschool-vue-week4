@@ -27,7 +27,7 @@ img {
     justify-content: center;
     align-items: center;
     background-color: rgb(0 0 0  / 60%);
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .loading.-show {

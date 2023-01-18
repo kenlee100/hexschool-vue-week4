@@ -76,10 +76,10 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script type="module">
       import config from "./js/config.js";
+
       const app = Vue.createApp({
         data() {
           return {
-            ...config,
             loginData: {
               username: "",
               password: "",
@@ -90,7 +90,7 @@
         methods: {
           login() {
             axios
-              .post(`${this.url}/admin/signin`, this.loginData)
+              .post(`${config.url}/admin/signin`, this.loginData)
               .then((res) => {
                 const { token, expired } = res.data;
                 document.cookie = `userToken=${token}; expires=${new Date(
