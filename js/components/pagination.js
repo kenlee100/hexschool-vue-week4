@@ -31,7 +31,10 @@ export default {
           v-for="(item,index) in pages.total_pages"
           :key="index"
         >
-          <a class="page-link" href="#" @click.prevent="$emit('change-page', item)">{{ index + 1 }}</a>
+          <!-- 當下頁面狀態時 顯示 span標籤元素 -->
+          <span v-if="pages.current_page === item" class="page-link" >{{ index + 1 }}</span>
+          <!-- 否則 顯示 a 標籤元素 + 可切換分頁資料事件 -->
+          <a v-else class="page-link" href="#" @click.prevent="$emit('change-page', item)">{{ index + 1 }}</a>
         </li>
         <li class="page-item" :class="{'disabled':!pages.has_next}">
           <a

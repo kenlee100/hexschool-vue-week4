@@ -83,15 +83,11 @@
       <loading :is-show="isLoading"></loading>
       <!-- Modal -->
       <product-modal
-        :api-url="url"
-        :api-path="path"
         :temp-content="temp"
         :is-new="isNew"
         @update-data="getProducts"
       ></product-modal>
       <del-product-modal
-        :api-url="url"
-        :api-path="path"
         :temp-content="temp"
         @update-data="getProducts"
       ></del-product-modal>
@@ -115,17 +111,15 @@
     <script src="https://unpkg.com/vue@next"></script>
     <script type="module">
       import config from "./js/config.js";
-      import productModal from "./js/productModal.js";
-      import delProductModal from "./js/delProductModal.js";
-      import pagination from "./js/pagination.js";
-      import loading from "./js/loading.js";
-
+      import productModal from "./js/components/productModal.js";
+      import delProductModal from "./js/components/delProductModal.js";
+      import pagination from "./js/components/pagination.js";
+      import loading from "./js/components/loading.js";
       let productModalContainer = null;
       let delProductModalContainer = null;
       const app = Vue.createApp({
         data() {
           return {
-            ...config,
             // 初始商品資料
             products: [],
             temp: {
@@ -146,7 +140,7 @@
           // 檢查是否登入
           checkLogin() {
             axios
-              .post(`${this.url}/api/user/check`)
+              .post(`${config.url}/api/user/check`)
               .then((res) => {
                 this.getProducts();
               })
@@ -161,7 +155,9 @@
           getProducts(num = 1) {
             this.isLoading = true;
             axios
-              .get(`${this.url}/api/${this.path}/admin/products/?page=${num}`)
+              .get(
+                `${config.url}/api/${config.path}/admin/products/?page=${num}`
+              )
               .then((res) => {
                 this.products = res.data.products;
                 this.pagination = res.data.pagination;
@@ -189,7 +185,7 @@
           },
           logout() {
             axios
-              .post(`${this.url}/logout/`)
+              .post(`${config.url}/logout/`)
               .then((res) => {
                 alert(res.data.message);
                 document.cookie = 'userToken="";';
