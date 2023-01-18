@@ -1,9 +1,4 @@
 export default {
-  data() {
-    return {
-      productModal: null,
-    };
-  },
   props: {
     // 接收外層url
     apiUrl: {
@@ -26,9 +21,11 @@ export default {
     },
   },
   methods: {
+    // 觸發外層關閉modal事件
     closeModal() {
-      this.productModal.hide();
+      this.$emit("close-modal", "#productModal");
     },
+
     // 建立圖片欄位
     createImage() {
       // 計算圖片數量
@@ -105,23 +102,19 @@ export default {
         data: this.tempContent,
       })
         .then((res) => {
+          // 外層傳入 取得所有商品
           this.$emit("update-data");
-          alert(res.data.message);
-
           this.closeModal();
+          alert(res.data.message);
         })
         .catch((err) => {
           alert(err.data.message);
         });
     },
   },
-  mounted() {
-    this.productModal = new bootstrap.Modal("#productModal");
-  },
   template: `
           <div
         id="productModal"
-        ref="productModal"
         class="modal fade"
         tabindex="-1"
         aria-labelledby="productModalLabel"
@@ -338,7 +331,6 @@ export default {
               <button
                 type="button"
                 class="btn btn-outline-secondary"
-                data-bs-dismiss="modal"
                 @click="closeModal"
               >
                 取消

@@ -1,9 +1,4 @@
 export default {
-  data() {
-    return {
-      delProductModal: null,
-    };
-  },
   props: {
     tempContent: {
       type: Object,
@@ -27,25 +22,22 @@ export default {
         .then((res) => {
           // 外層傳入 取得所有商品
           this.$emit("update-data");
-          alert(res.data.message);
           this.closeModal();
+          alert(res.data.message);
         })
         .catch((err) => {
           // 顯示失敗資訊
           alert(err.data.message);
         });
     },
+    // 觸發外層關閉modal事件
     closeModal() {
-      this.delProductModal.hide();
+      this.$emit("close-modal", "#delProductModal");
     },
-  },
-  mounted() {
-    this.delProductModal = new bootstrap.Modal(this.$refs.delProductModal);
   },
   template: `
     <div
       id="delProductModal"
-      ref="delProductModal"
       class="modal fade"
       tabindex="-1"
       aria-labelledby="delProductModalLabel"
@@ -73,8 +65,8 @@ export default {
             <button
               type="button"
               class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
-            >
+              @click="closeModal"
+              >
               取消
             </button>
             <button

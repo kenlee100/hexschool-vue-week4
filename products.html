@@ -79,19 +79,20 @@
           :get-products="getProducts"
         ></pagination>
       </div>
-      <!-- 讀取畫面事件待執行 -->
+      <!-- loading -->
       <loading :is-show="isLoading"></loading>
       <!-- Modal -->
       <product-modal
         :temp-content="temp"
         :is-new="isNew"
+        @close-modal="closeModal"
         @update-data="getProducts"
       ></product-modal>
       <del-product-modal
         :temp-content="temp"
+        @close-modal="closeModal"
         @update-data="getProducts"
       ></del-product-modal>
-      <!-- Modal -->
     </div>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js"
@@ -181,6 +182,13 @@
             } else if (productMethod === "delete") {
               this.temp = JSON.parse(JSON.stringify(item));
               delProductModalContainer.show();
+            }
+          },
+          closeModal(target) {
+            if (target === "#productModal") {
+              productModalContainer.hide();
+            } else if (target === "#delProductModal") {
+              delProductModalContainer.hide();
             }
           },
           logout() {
