@@ -1,3 +1,6 @@
+[v-cloak] {
+    display: none;
+}
 .form-signin {
     width: 100%;
     max-width: 330px;
