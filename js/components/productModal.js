@@ -1,4 +1,9 @@
 export default {
+  data() {
+    return {
+      modal: {},
+    };
+  },
   props: {
     // 接收外層url
     apiUrl: {
@@ -21,11 +26,12 @@ export default {
     },
   },
   methods: {
-    // 觸發外層關閉modal事件
-    closeModal() {
-      this.$emit("close-modal", "#productModal");
+    openProductModal() {
+      this.modal.show();
     },
-
+    closeModal() {
+      this.modal.hide();
+    },
     // 建立圖片欄位
     createImage() {
       // 計算圖片數量
@@ -113,13 +119,7 @@ export default {
     },
   },
   template: `
-          <div
-        id="productModal"
-        class="modal fade"
-        tabindex="-1"
-        aria-labelledby="productModalLabel"
-        aria-hidden="true"
-      >
+          <div class="modal fade" tabindex="-1" ref="modal" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
@@ -130,7 +130,7 @@ export default {
               <button
                 type="button"
                 class="btn-close"
-                data-bs-dismiss="modal"
+                @click="closeModal"
                 aria-label="Close"
               ></button>
             </div>
@@ -347,4 +347,7 @@ export default {
         </div>
       </div>
         `,
+  mounted() {
+    this.modal = new bootstrap.Modal(this.$refs.modal);
+  },
 };

@@ -1,4 +1,9 @@
 export default {
+  data() {
+    return {
+      modal: {},
+    };
+  },
   props: {
     tempContent: {
       type: Object,
@@ -30,15 +35,15 @@ export default {
           alert(err.data.message);
         });
     },
-    // 觸發外層關閉modal事件
+    openDelProductModal() {
+      this.modal.show();
+    },
     closeModal() {
-      this.$emit("close-modal", "#delProductModal");
+      this.modal.hide();
     },
   },
   template: `
-    <div
-      id="delProductModal"
-      class="modal fade"
+    <div class="modal fade" ref="modal"
       tabindex="-1"
       aria-labelledby="delProductModalLabel"
       aria-hidden="true"
@@ -52,7 +57,7 @@ export default {
             <button
               type="button"
               class="btn-close"
-              data-bs-dismiss="modal"
+              @click="closeModal"
               aria-label="Close"
             ></button>
           </div>
@@ -81,4 +86,7 @@ export default {
       </div>
     </div>
   `,
+  mounted() {
+    this.modal = new bootstrap.Modal(this.$refs.modal);
+  },
 };

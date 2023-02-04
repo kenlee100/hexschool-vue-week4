@@ -18,12 +18,7 @@
     <div id="app" v-cloak>
       <div class="container">
         <div class="text-end mt-4">
-          <button
-            class="btn btn-primary"
-            data-bs-target="#productModal"
-            data-bs-toggle="modal"
-            @click="openModal('new')"
-          >
+          <button class="btn btn-primary" @click="openModal('new')">
             建立新的產品
           </button>
         </div>
@@ -53,8 +48,6 @@
                   <button
                     type="button"
                     class="btn btn-outline-primary btn-sm"
-                    data-bs-target="#productModal"
-                    data-bs-toggle="modal"
                     @click="openModal('edit',item)"
                   >
                     編輯
@@ -62,8 +55,6 @@
                   <button
                     type="button"
                     class="btn btn-outline-danger btn-sm"
-                    data-bs-target="#delProductModal"
-                    data-bs-toggle="modal"
                     @click="openModal('delete',item)"
                   >
                     刪除
@@ -85,12 +76,12 @@
       <product-modal
         :temp-content="temp"
         :is-new="isNew"
-        @close-modal="closeModal"
         @update-data="getProducts"
+        ref="productModal"
       ></product-modal>
       <del-product-modal
+        ref="delProductModal"
         :temp-content="temp"
-        @close-modal="closeModal"
         @update-data="getProducts"
       ></del-product-modal>
     </div>
@@ -116,8 +107,6 @@
       import delProductModal from "./js/components/delProductModal.js";
       import pagination from "./js/components/pagination.js";
       import loading from "./js/components/loading.js";
-      let productModalContainer = null;
-      let delProductModalContainer = null;
       const app = Vue.createApp({
         data() {
           return {
@@ -173,22 +162,15 @@
           openModal(productMethod, item) {
             if (productMethod === "new") {
               this.isNew = true;
-              productModalContainer.show();
+              this.$refs.productModal.openProductModal();
               this.temp = { imagesUrl: [] };
             } else if (productMethod === "edit") {
               this.isNew = false;
               this.temp = JSON.parse(JSON.stringify(item));
-              productModalContainer.show();
+              this.$refs.productModal.openProductModal();
             } else if (productMethod === "delete") {
               this.temp = JSON.parse(JSON.stringify(item));
-              delProductModalContainer.show();
-            }
-          },
-          closeModal(target) {
-            if (target === "#productModal") {
-              productModalContainer.hide();
-            } else if (target === "#delProductModal") {
-              delProductModalContainer.hide();
+              this.$refs.delProductModal.openDelProductModal();
             }
           },
           logout() {
@@ -213,10 +195,6 @@
           );
           axios.defaults.headers.common["Authorization"] = token;
           this.checkLogin();
-
-          // 初始化modal
-          productModalContainer = new bootstrap.Modal("#productModal");
-          delProductModalContainer = new bootstrap.Modal("#delProductModal");
         },
       });
 
