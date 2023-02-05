@@ -1,15 +1,6 @@
+import config from "../config.js";
 export default {
   props: {
-    // 接收外層url
-    apiUrl: {
-      type: String,
-      default: "",
-    },
-    // 接收外層path
-    apiPath: {
-      type: String,
-      default: "",
-    },
     tempContent: {
       type: Object,
       default: {},
@@ -68,7 +59,7 @@ export default {
         const refFiles = this.$refs[refItem];
         formData.append(refFiles.name, refFiles.files[0]);
         axios
-          .post(`${this.apiUrl}/api/${this.apiPath}/admin/upload/`, formData)
+          .post(`${config.url}/api/${config.path}/admin/upload/`, formData)
           .then((res) => {
             this.tempContent.imageUrl = res.data.imageUrl;
           })
@@ -81,7 +72,7 @@ export default {
         const i = parseInt(refFiles.dataset.num);
         formData.append(refFiles.name, refFiles.files[0]);
         axios
-          .post(`${this.apiUrl}/api/${this.apiPath}/admin/upload/`, formData)
+          .post(`${config.url}/api/${config.path}/admin/upload/`, formData)
           .then((res) => {
             this.tempContent.imagesUrl[i].imageUrl = res.data.imageUrl;
           })
@@ -91,11 +82,12 @@ export default {
       }
     },
     updateProduct() {
-      let url = `${this.apiUrl}/api/${this.apiPath}/admin/product`;
+      let url = `${config.url}/api/${config.path}/admin/product`;
+      console.log("url", url);
       let method = "post";
       // 判斷 isNew 是否為 新增
       if (!this.isNew) {
-        url = `${this.apiUrl}/api/${this.apiPath}/admin/product/${this.tempContent.id}`;
+        url = `${config.url}/api/${config.path}/admin/product/${this.tempContent.id}`;
         method = "put";
       }
       axios[method](url, {
