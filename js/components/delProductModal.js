@@ -1,24 +1,15 @@
+import config from "../config.js";
 export default {
   props: {
     tempContent: {
       type: Object,
       default: {},
     },
-    // 接收外層url
-    apiUrl: {
-      type: String,
-      default: "",
-    },
-    // 接收外層path
-    apiPath: {
-      type: String,
-      default: "",
-    },
   },
   methods: {
     deleteItem(id) {
       axios
-        .delete(`${this.apiUrl}/api/${this.apiPath}/admin/product/${id}`)
+        .delete(`${config.url}/api/${config.path}/admin/product/${id}`)
         .then((res) => {
           // 外層傳入 取得所有商品
           this.$emit("update-data");
